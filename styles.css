@@ -1,0 +1,15 @@
+body {
+    background-color: black;
+}
+
+.board {
+    display: grid;
+    grid-template-columns:repeat(10, minmax(0, 1fr));
+    height: 50vh;
+    width: 50vh;
+}
+
+.square {
+    background-color: red;
+    border: 1px solid blue;
+}
