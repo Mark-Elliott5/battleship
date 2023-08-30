@@ -6,19 +6,19 @@ const Ship = (inputLength) => {
   const getHits = () => hits;
 
   const sink = () => {
-    sunk = true;
+    if (getHits() >= length) {
+      sunk = true;
+    }
+    return sunk;
   };
 
   const hit = () => {
     hits += 1;
-    if (hits >= length) {
-      sink();
-    }
+    return sink();
   };
 
   return {
     length,
-    getHits,
     hit,
   };
 };
