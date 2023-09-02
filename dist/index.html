@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Battleship</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" />
     <link
       rel="icon"
       type="image/png"
@@ -22,10 +22,10 @@
     <header>Battleship</header>
     <main>
       <div class="player">
-        <div class="board" id="board-1"></div>
+        <div class="board" id="player-board"></div>
       </div>
       <div class="player">
-        <div class="board" id="board-2"></div>
+        <div class="board" id="computer-board"></div>
       </div>
     </main>
     <footer>
@@ -36,6 +36,16 @@
         />
       </a>
     </footer>
+    <div id="setup-grid-wrapper" class="hidden">
+      <p>Setup your Battleship board!</p>
+      <button id="orientation-button">Change Ship Orientation</button>
+      <div id="setup-grid"></div>
+      <button id="submit-board">Submit</button>
+    </div>
+    <div id="end-game-wrapper" classList="hidden">
+      <p id="end-game-text"></p>
+      <button id="reset-game">New Game</button>
+    </div>
     <script src="main.js"></script>
   </body>
 </html>

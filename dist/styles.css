@@ -1,5 +1,6 @@
 body {
     background-color: black;
+    color: white;
 }
 
 .board {
@@ -12,4 +13,33 @@ body {
 .square {
     background-color: red;
     border: 1px solid blue;
+}
+
+#setup-grid-wrapper {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50vw;
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#setup-grid {
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    grid-template-rows: repeat(10, minmax(0, 1fr));;
+    width: 300px;
+    height: 300px;
+}
+
+.setup-square {
+    border: solid greenyellow;
+}
+
+.hidden {
+    display: none;
 }
