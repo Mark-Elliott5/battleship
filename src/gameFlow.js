@@ -23,10 +23,22 @@ const gameFlow = (() => {
     return result;
   };
 
+  const checkPlaceableXHandler = (data) => {
+    const result = player1.checkPlaceableX(data);
+    console.log(result);
+    myEmitter.emit(`${result}`);
+  };
+
+  const checkPlaceableYHandler = (data) => {
+    const result = player1.checkPlaceableY(data);
+    console.log(result);
+    myEmitter.emit(`${result}`);
+  };
+
   const startGame = () => {
-    // myEmitter.off('checkPlaceableX');
-    // myEmitter.off('checkPlaceableY');
-    // myEmitter.off('submitBoard');
+    myEmitter.off('checkPlaceableX', checkPlaceableXHandler);
+    myEmitter.off('checkPlaceableY', checkPlaceableYHandler);
+    myEmitter.off('submitBoard', startGame);
     myEmitter.emit('startGame');
 
     // while (player1.ships.length) {
@@ -83,18 +95,6 @@ const gameFlow = (() => {
     });
   };
 
-  const checkPlaceableXHandler = (data) => {
-    const result = player1.checkPlaceableX(data);
-    console.log(result);
-    myEmitter.emit(`${result}`);
-  };
-
-  const checkPlaceableYHandler = (data) => {
-    const result = player1.checkPlaceableY(data);
-    console.log(result);
-    myEmitter.emit(`${result}`);
-  };
-
   const setBoard = () => {
     myEmitter.emit('setBoard');
     myEmitter.on('checkPlaceableX', checkPlaceableXHandler);
@@ -109,7 +109,7 @@ const gameFlow = (() => {
   };
 
   const resetGame = () => {
-    // myEmitter.off('resetGame');
+    myEmitter.off('resetGame', resetGame);
     player1.reset();
     player2.reset();
     setBoard();

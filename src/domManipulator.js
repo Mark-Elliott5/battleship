@@ -15,7 +15,7 @@ const domManipulator = (() => {
     myEmitter.emit('playerAttack', data.target);
   };
 
-  const constructBoards = () => {
+  const constructBoards = (data) => {
     const playerSquares = document.getElementById('player-board');
     const computerSquares = document.getElementById('computer-board');
     while (playerSquares.firstChild) {
@@ -70,7 +70,7 @@ const domManipulator = (() => {
   };
 
   const endGame = (winner) => {
-    myEmitter.off('gameOver');
+    myEmitter.off('gameOver', endGame);
     const endGameWrapper = document.getElementById('end-game-wrapper');
     const endGameText = document.getElementById('end-game-text');
     endGameText.textContent = winner;
@@ -81,36 +81,45 @@ const domManipulator = (() => {
     });
   };
 
-  const startGame = () => {
+  const startGame = (data) => {
+    submitButton.disabled = true;
     // do stuff
     // toggleSetupBoard();
     // unpack data object (data.player1 and data.player2)
+    myEmitter.off('startGame', startGame);
+    // myEmitter.off('spaceTaken');
+    // myEmitter.off('shipPlaced');
+    // myEmitter.off('allShipsPlaced');
     toggleSetupBoard();
     constructBoards();
-    myEmitter.on('gameOver', (data, result) => {
-      endGame(result);
-    });
+    myEmitter.on('gameOver', endGame);
   };
 
   const submitButton = document.getElementById('submit-board');
   submitButton.addEventListener('click', () => {
+    console.log('submitted board');
     myEmitter.emit('submitBoard');
   });
 
-  myEmitter.on('setBoard', () => {
+  const submitButtonHandler = () => {
+    submitButton.disabled = false;
+    myEmitter.off('allShipsPlaced', submitButtonHandler);
+  };
+
+  const setBoardHandler = () => {
+    myEmitter.on('startGame', startGame);
+    myEmitter.on('spaceTaken', () => {
+      // spaceTaken() message
+    });
+    myEmitter.on('shipPlaced', () => {
+      // ShipPlaced() message
+    });
+    myEmitter.on('allShipsPlaced', submitButtonHandler);
     createSetupGrid();
     toggleSetupBoard();
-  });
-  myEmitter.on('startGame', (data) => startGame(data));
-  myEmitter.on('spaceTaken', () => {
-    // spaceTaken() message
-  });
-  myEmitter.on('shipPlaced', () => {
-    // ShipPlaced() message
-  });
-  myEmitter.on('allShipsPlaced', () => {
-    // allShipsPlaced() message
-  });
+  };
+
+  myEmitter.on('setBoard', setBoardHandler);
 
   myEmitter.on('miss', (square) => {
     // square background color = grey;

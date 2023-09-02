@@ -30,7 +30,10 @@ const Player = () => {
         const [y, x] = coords[i];
         board[y][x] = ship;
       }
-      return 'shipPlaced';
+      if (ships.length) {
+        return 'shipPlaced';
+      }
+      return 'allShipsPlaced';
     }
     console.log('all ships have been placed');
     return 'allShipsPlaced';

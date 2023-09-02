@@ -40,6 +40,21 @@ body {
     border: solid greenyellow;
 }
 
+main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10vw;
+}
+
+.board {
+
+}
+
+.board-square {
+    border: 1px solid greenyellow;
+}
+
 .hidden {
-    display: none;
+    visibility: hidden;
 }
