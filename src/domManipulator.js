@@ -15,7 +15,7 @@ const domManipulator = (() => {
     myEmitter.emit('playerAttack', data.target);
   };
 
-  const constructBoards = (data) => {
+  const constructBoards = (board) => {
     const playerSquares = document.getElementById('player-board');
     const computerSquares = document.getElementById('computer-board');
     while (playerSquares.firstChild) {
@@ -28,16 +28,29 @@ const domManipulator = (() => {
       );
       computerSquares.firstChild.remove();
     }
+    const shipCoords = [];
+    for (let y = 0; y < board.length; y += 1) {
+      for (let x = 0; x < board[y].length; x += 1) {
+        if (typeof board[y][x] === 'object') {
+          const squareID = x + y * 10;
+          shipCoords.push(squareID);
+        }
+      }
+    }
     for (let i = 0; i < 100; i += 1) {
       const square = document.createElement('div');
       square.classList = 'board-square';
       square.dataset.xCoord = i % 10;
       square.dataset.yCoord = Math.floor(i / 10);
       playerSquares.append(square);
+      square.id = `player-square-${i}`;
       const computerSquare = square.cloneNode(true);
-      computerSquare.id = i;
+      computerSquare.id = `computer-square-${i}`;
       computerSquare.addEventListener('click', playerAttackHandler);
       computerSquares.append(computerSquare);
+      if (shipCoords.includes(i)) {
+        square.classList.add('ship');
+      }
     }
   };
 
@@ -81,20 +94,6 @@ const domManipulator = (() => {
     });
   };
 
-  const startGame = (data) => {
-    submitButton.disabled = true;
-    // do stuff
-    // toggleSetupBoard();
-    // unpack data object (data.player1 and data.player2)
-    myEmitter.off('startGame', startGame);
-    // myEmitter.off('spaceTaken');
-    // myEmitter.off('shipPlaced');
-    // myEmitter.off('allShipsPlaced');
-    toggleSetupBoard();
-    constructBoards();
-    myEmitter.on('gameOver', endGame);
-  };
-
   const submitButton = document.getElementById('submit-board');
   submitButton.addEventListener('click', () => {
     console.log('submitted board');
@@ -104,6 +103,20 @@ const domManipulator = (() => {
   const submitButtonHandler = () => {
     submitButton.disabled = false;
     myEmitter.off('allShipsPlaced', submitButtonHandler);
+  };
+
+  const startGame = (board) => {
+    submitButton.disabled = true;
+    // do stuff
+    // toggleSetupBoard();
+    // unpack data object (data.player1 and data.player2)
+    myEmitter.off('startGame', startGame);
+    // myEmitter.off('spaceTaken');
+    // myEmitter.off('shipPlaced');
+    // myEmitter.off('allShipsPlaced');
+    toggleSetupBoard();
+    constructBoards(board);
+    myEmitter.on('gameOver', endGame);
   };
 
   const setBoardHandler = () => {

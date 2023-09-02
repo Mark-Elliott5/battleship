@@ -39,7 +39,7 @@ const gameFlow = (() => {
     myEmitter.off('checkPlaceableX', checkPlaceableXHandler);
     myEmitter.off('checkPlaceableY', checkPlaceableYHandler);
     myEmitter.off('submitBoard', startGame);
-    myEmitter.emit('startGame');
+    myEmitter.emit('startGame', player1.board);
 
     // while (player1.ships.length) {
     //   console.log(`Ships remaining: ${player1.ships.length}`);
