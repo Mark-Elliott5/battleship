@@ -20,15 +20,6 @@ body {
     width: 50vh;
 }
 
-.square {
-    background-color: red;
-    border: 1px solid blue;
-}
-
-.selected {
-    outline: 4px solid hsl(84, 100%, 50%);
-}
-
 .ship {
     background-color: green;
 }
@@ -77,12 +68,14 @@ main {
     gap: 10vw;
 }
 
-.board {
-
+.computer-board-square, .player-board-square {
+    border: 1px solid greenyellow;
+    position: relative;
 }
 
-.board-square {
-    border: 1px solid greenyellow;
+.computer-board-square:hover, .setup-square:hover {
+    outline: 4px solid hsl(84, 100%, 50%);
+    z-index: 1;
 }
 
 .hidden {
