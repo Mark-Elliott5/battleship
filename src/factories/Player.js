@@ -65,19 +65,15 @@ const Player = () => {
     if (board[y][x] === 1 || board[y][x] === 2) {
       return 'unavailable';
     }
-    // if (board[y][x] instanceof Object) {
     const result = board[y][x].hit();
     board[y][x] = 2;
     if (result) {
       shipsSank += 1;
       if (shipsSank === 5) {
-        // emit gameOver message
         return 'gameOver';
       }
-      // emit sunk message
       return 'sank';
     }
-    // emit not sunk but hit message
     return 'hit';
   };
 

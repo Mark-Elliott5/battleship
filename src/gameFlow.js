@@ -52,6 +52,9 @@ const gameFlow = (() => {
       parseInt(square.dataset.xCoord, 10),
       parseInt(square.dataset.yCoord, 10)
     );
+    if (result === 'unavailable') {
+      return;
+    }
     myEmitter.emit(`player-${result}`, square);
     if (result === 'gameOver') {
       endGame();
@@ -87,7 +90,7 @@ const gameFlow = (() => {
   };
 
   const resetGame = () => {
-    // myEmitter.off('resetGame', resetGame);
+    myEmitter.off('resetGame', resetGame);
     player1 = Player();
     player2 = Player();
     setBoard();

@@ -1,11 +1,12 @@
 import myEmitter from './emitter';
 
 const domManipulator = (() => {
+  const playerAttackHandler = (square) => {
+    console.log('player attacks');
+    myEmitter.emit('playerAttack', square.target);
+  };
+
   const constructBoards = (board) => {
-    const playerAttackHandler = (square) => {
-      console.log('player attacks');
-      myEmitter.emit('playerAttack', square.target);
-    };
     const playerSquares = document.getElementById('player-board');
     const computerSquares = document.getElementById('computer-board');
     playerSquares.replaceChildren();
@@ -42,32 +43,24 @@ const domManipulator = (() => {
   const createSetupGrid = () => {
     let orientation = 'X';
     const orientationButton = document.getElementById('orientation-button');
-    orientationButton.addEventListener('click', () => {
+    const orientationHandler = () => {
       if (orientation === 'X') {
         orientation = 'Y';
       } else {
         orientation = 'X';
       }
-    });
-    const setupGrid = document.getElementById('setup-grid');
-    // while (setupGrid.firstChild) {
-    //   setupGrid.firstChild.removeEventListener('click');
-    //   setupGrid.firstChild.remove();
-    // }
-    const checkPlaceable = (square) => {
-      const { xCoord } = square.target.dataset;
-      const { yCoord } = square.target.dataset;
-      myEmitter.emit(`checkPlaceable${orientation}`, [
-        parseInt(xCoord, 10),
-        parseInt(yCoord, 10),
-      ]);
-      // if (orientation === 'x') {
-      //   myEmitter.emit('checkPlaceableX', square.dataset);
-      // } else {
-      //   myEmitter.emit('checkPlaceableY', square.dataset);
-      // }
     };
+    orientationButton.addEventListener('click', orientationHandler);
+    const setupGrid = document.getElementById('setup-grid');
     if (!setupGrid.firstChild) {
+      const checkPlaceable = (square) => {
+        const { xCoord } = square.target.dataset;
+        const { yCoord } = square.target.dataset;
+        myEmitter.emit(`checkPlaceable${orientation}`, [
+          parseInt(xCoord, 10),
+          parseInt(yCoord, 10),
+        ]);
+      };
       for (let i = 0; i < 100; i += 1) {
         const square = document.createElement('div');
         square.classList = 'setup-square';
@@ -80,6 +73,8 @@ const domManipulator = (() => {
   };
 
   const toggleSetupBoard = () => {
+    const endGameWrapper = document.getElementById('end-game-wrapper');
+    endGameWrapper.classList.add('hidden');
     const setupGridWrapper = document.getElementById('setup-grid-wrapper');
     setupGridWrapper.classList.toggle('hidden');
   };
@@ -136,17 +131,25 @@ const domManipulator = (() => {
 
   const endGame = (winner) => {
     removeGameEmitters();
+    const computerSquares = document.querySelectorAll(
+      '.computer-board-square:not([class*=" "])'
+    );
+
+    for (let i = 0; i < computerSquares.length; i += 1) {
+      computerSquares[i].removeEventListener('click', playerAttackHandler);
+    }
     const endGameWrapper = document.getElementById('end-game-wrapper');
     const endGameText = document.getElementById('end-game-text');
     endGameText.textContent = `You ${
       winner === 'player' ? 'won' : 'lost'
     } the game!`;
-    endGameWrapper.classList.toggle('hidden');
+    endGameWrapper.classList.remove('hidden');
     const resetButton = document.getElementById('reset-game');
-    resetButton.addEventListener('click', () => {
+    const resetGameHandler = () => {
       console.log('resetGame emitted');
       myEmitter.emit('resetGame');
-    });
+    };
+    resetButton.addEventListener('click', resetGameHandler);
   };
 
   const submitButton = document.getElementById('submit-board');
