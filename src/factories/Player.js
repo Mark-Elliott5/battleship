@@ -6,16 +6,24 @@ const Player = () => {
   const ships = Array.from([2, 3, 3, 4, 5], (length) => Ship(length));
   let shipsSank = 0;
 
+  const EventObj = (event, xCoord, yCoord, orientation, length) => ({
+    event,
+    xCoord,
+    yCoord,
+    orientation,
+    length,
+  });
+
   const checkPlaceableX = (xCoord, yCoord) => {
     const ship = ships.pop();
     const coords = [];
     if (ship !== undefined) {
       for (let i = 0; i < ship.length; i += 1) {
         coords.push([yCoord, xCoord + i]);
-        if (board[yCoord][xCoord + i]) {
+        if (xCoord + i > 9 || board[yCoord][xCoord + i]) {
           console.log('space taken or out of bounds');
           ships.push(ship);
-          return 'spaceTaken';
+          return EventObj('spaceTaken', xCoord, yCoord, 'X', undefined);
         }
       }
       for (let i = 0; i < coords.length; i += 1) {
@@ -23,12 +31,12 @@ const Player = () => {
         board[y][x] = ship;
       }
       if (ships.length) {
-        return 'shipPlaced';
+        return EventObj('shipPlaced', xCoord, yCoord, 'X', ship.length);
       }
-      return 'allShipsPlaced';
+      return EventObj('allShipsPlaced', xCoord, yCoord, 'X', ship.length);
     }
     console.log('all ships have been placed');
-    return 'allShipsPlaced';
+    return EventObj('allShipsPlaced', xCoord, yCoord, 'X', undefined);
   };
 
   const checkPlaceableY = (xCoord, yCoord) => {
@@ -37,20 +45,23 @@ const Player = () => {
     if (ship !== undefined) {
       for (let i = 0; i < ship.length; i += 1) {
         coords.push([yCoord + i, xCoord]);
-        if (board[yCoord + i][xCoord]) {
+        if (yCoord + i > 9 || board[yCoord + i][xCoord]) {
           console.log('space taken or out of bounds');
           ships.push(ship);
-          return 'spaceTaken';
+          return EventObj('spaceTaken', xCoord, yCoord, 'Y', undefined);
         }
       }
       for (let i = 0; i < coords.length; i += 1) {
         const [y, x] = coords[i];
         board[y][x] = ship;
       }
-      return 'shipPlaced';
+      if (ships.length) {
+        return EventObj('shipPlaced', xCoord, yCoord, 'Y', ship.length);
+      }
+      return EventObj('allShipsPlaced', xCoord, yCoord, 'Y', ship.length);
     }
     console.log('all ships have been placed');
-    return 'allShipsPlaced';
+    return EventObj('allShipsPlaced', xCoord, yCoord, 'Y', undefined);
   };
 
   const attack = (x, y) => {
@@ -93,12 +104,26 @@ const Player = () => {
     return result;
   };
 
+  const generateRandomBoard = () => {
+    while (ships.length) {
+      const orientation = ['X', 'Y'][Math.floor(Math.random() * 2)];
+      // let result;
+      if (orientation === 'X') {
+        checkPlaceableX(...generateRandomAttackCoord());
+      }
+      if (orientation === 'X') {
+        checkPlaceableY(...generateRandomAttackCoord());
+      }
+    }
+  };
+
   return {
     board,
     checkPlaceableX,
     checkPlaceableY,
     attack,
     generateRandomAttackCoord,
+    generateRandomBoard,
   };
 };
 

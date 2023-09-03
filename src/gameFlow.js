@@ -5,45 +5,22 @@ const gameFlow = (() => {
   let player1 = Player();
   let player2 = Player();
 
-  // const generateRandomCoord = () => {
-  //   // generate random coords for comp to attack
-  //   // return [x,y];
-  //   const coords = [];
-  //   for (let y = 0; y < player1.board.length; y += 1) {
-  //     const yArray = player1.board[y];
-  //     for (let x = 0; x < yArray.length; x += 1) {
-  //       const space = yArray[x];
-  //       if (space !== 1 && space !== 2) {
-  //         const coord = [x, y];
-  //         coords.push(coord);
-  //       }
-  //     }
-  //   }
-  //   const result = coords[Math.floor(Math.random() * coords.length)];
-  //   return result;
-  // };
-
   const checkPlaceableXHandler = (data) => {
     const result = player1.checkPlaceableX(...data);
     console.log(result);
-    myEmitter.emit(`${result}`);
+    myEmitter.emit(`${result.event}`, result);
   };
 
   const checkPlaceableYHandler = (data) => {
     const result = player1.checkPlaceableY(...data);
-    console.log(result);
-    myEmitter.emit(`${result}`);
+    console.log(result.event);
+    myEmitter.emit(`${result.event}`, result);
   };
 
   const computerAttack = () => {
     const space = player1.generateRandomAttackCoord();
     const divId = space[1] * 10 + space[0];
     const result = player1.attack(...space);
-    // myEmitter.emit(
-    //   `${result}`,
-    //   divId,
-    //   `${result === 'gameOver' ? 'You lost!' : undefined}`
-    // );
     return [result, divId];
   };
 
@@ -61,6 +38,7 @@ const gameFlow = (() => {
       return;
     }
     const computerMove = computerAttack();
+    console.log(result);
     console.log(computerMove);
     myEmitter.emit(`computer-${computerMove[0]}`, computerMove[1]);
     if (computerMove[0] === 'gameOver') {
@@ -72,6 +50,7 @@ const gameFlow = (() => {
     myEmitter.off('checkPlaceableX', checkPlaceableXHandler);
     myEmitter.off('checkPlaceableY', checkPlaceableYHandler);
     myEmitter.off('submitBoard', startGame);
+    player2.generateRandomBoard();
     myEmitter.emit('startGame', player1.board);
     myEmitter.on('playerAttack', playerAttackHandler);
   };
@@ -80,13 +59,7 @@ const gameFlow = (() => {
     myEmitter.emit('setBoard');
     myEmitter.on('checkPlaceableX', checkPlaceableXHandler);
     myEmitter.on('checkPlaceableY', checkPlaceableYHandler);
-    myEmitter.on(
-      'submitBoard',
-      // player2.generateRandomBoard();
-      // emit start game signal
-      // startGame();
-      startGame
-    );
+    myEmitter.on('submitBoard', startGame);
   };
 
   const resetGame = () => {

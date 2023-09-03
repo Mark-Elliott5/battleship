@@ -66,6 +66,7 @@ const domManipulator = (() => {
         square.classList = 'setup-square';
         square.dataset.xCoord = i % 10;
         square.dataset.yCoord = Math.floor(i / 10);
+        square.id = `setup-${i}`;
         square.addEventListener('click', checkPlaceable);
         setupGrid.appendChild(square);
       }
@@ -117,9 +118,7 @@ const domManipulator = (() => {
     // myEmitter.on('player-unavailable', (square) => {
     // display unavail message
     // });
-    myEmitter.off('player-sank', (square) => {
-      // display sank message
-    });
+    myEmitter.off('player-sank', sankHandler);
 
     myEmitter.off('computer-miss', missHandler);
     myEmitter.off('computer-hit', hitHandler);
@@ -167,8 +166,23 @@ const domManipulator = (() => {
     // display space taken message
   };
 
-  const shipPlacedHandler = () => {
+  const shipPlacedHandler = (EventObj) => {
     // display all ships placed message
+    const xCoord = { EventObj };
+    const yCoord = { EventObj };
+    const orientation = { EventObj };
+    const length = { EventObj };
+    for (let i = 0; i < length; i += 1) {
+      let id;
+      if (orientation === 'X') {
+        id = xCoord + i + yCoord * 10;
+      }
+      if (orientation === 'Y') {
+        id = xCoord + (i + yCoord) * 10;
+      }
+      const setupSquare = document.getElementById(`setup-${id}`);
+      setupSquare.classList.add('ship');
+    }
   };
 
   const startGame = (board) => {
@@ -188,9 +202,7 @@ const domManipulator = (() => {
     // myEmitter.on('player-unavailable', (square) => {
     // display unavail message
     // });
-    myEmitter.on('player-sank', (square) => {
-      // display sank message
-    });
+    myEmitter.on('player-sank', sankHandler);
 
     myEmitter.on('computer-miss', missHandler);
     myEmitter.on('computer-hit', hitHandler);
