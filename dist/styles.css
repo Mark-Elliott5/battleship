@@ -25,8 +25,24 @@ body {
     border: 1px solid blue;
 }
 
+.selected {
+    outline: 4px solid hsl(84, 100%, 50%);
+}
+
 .ship {
     background-color: green;
+}
+
+.miss {
+    background-color: dimgray;
+}
+
+.hit {
+    background-color: crimson;
+}
+
+.sank {
+    background-color: red;
 }
 
 #setup-grid-wrapper {

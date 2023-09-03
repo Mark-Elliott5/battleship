@@ -11,11 +11,18 @@ const domManipulator = (() => {
     }
   });
 
-  const playerAttackHandler = (data) => {
-    myEmitter.emit('playerAttack', data.target);
-  };
-
   const constructBoards = (board) => {
+    const playerAttackHandler = (square) => {
+      console.log('player attacks');
+      square.target.removeEventListener('click', playerAttackHandler);
+      myEmitter.emit('playerAttack', square.target);
+    };
+    const mouseEnterHandler = (square) => {
+      square.target.classList.add('selected');
+    };
+    const mouseLeaveHandler = (square) => {
+      square.target.classList.remove('selected');
+    };
     const playerSquares = document.getElementById('player-board');
     const computerSquares = document.getElementById('computer-board');
     while (playerSquares.firstChild) {
@@ -25,6 +32,14 @@ const domManipulator = (() => {
       computerSquares.firstChild.removeEventListener(
         'click',
         playerAttackHandler
+      );
+      computerSquares.firstChild.removeEventListener(
+        'mouseenter',
+        mouseEnterHandler
+      );
+      computerSquares.firstChild.removeEventListener(
+        'mouseleave',
+        mouseLeaveHandler
       );
       computerSquares.firstChild.remove();
     }
@@ -46,7 +61,11 @@ const domManipulator = (() => {
       square.id = `player-square-${i}`;
       const computerSquare = square.cloneNode(true);
       computerSquare.id = `computer-square-${i}`;
-      computerSquare.addEventListener('click', playerAttackHandler);
+      computerSquare.addEventListener('click', playerAttackHandler, {
+        once: true,
+      });
+      computerSquare.addEventListener('mouseenter', mouseEnterHandler);
+      computerSquare.addEventListener('mouseleave', mouseLeaveHandler);
       computerSquares.append(computerSquare);
       if (shipCoords.includes(i)) {
         square.classList.add('ship');
@@ -86,7 +105,9 @@ const domManipulator = (() => {
     myEmitter.off('gameOver', endGame);
     const endGameWrapper = document.getElementById('end-game-wrapper');
     const endGameText = document.getElementById('end-game-text');
-    endGameText.textContent = winner;
+    endGameText.textContent = `You ${
+      winner === 'player' ? 'won' : 'lost'
+    } the game!`;
     endGameWrapper.classList.toggle('hidden');
     const resetButton = document.getElementById('reset-game');
     resetButton.addEventListener('click', () => {
@@ -116,7 +137,54 @@ const domManipulator = (() => {
     // myEmitter.off('allShipsPlaced');
     toggleSetupBoard();
     constructBoards(board);
-    myEmitter.on('gameOver', endGame);
+
+    const missHandler = (id) => {
+      if (typeof id === 'object') {
+        id.classList.add('miss');
+        return;
+      }
+      const square = document.getElementById(`player-square-${id}`);
+      square.classList.add('miss');
+      console.log(square);
+    };
+    const hitHandler = (id) => {
+      if (typeof id === 'object') {
+        id.classList.add('hit');
+        return;
+      }
+      const square = document.getElementById(`player-square-${id}`);
+      square.classList.add('hit');
+      console.log(square);
+    };
+    // const unavailableHandler = (id) => {};
+    const sankHandler = (id) => {
+      hitHandler(id);
+      // alert sank message
+    };
+    const playerWinHandler = (id) => {
+      sankHandler(id);
+      endGame('player');
+    };
+    const computerWinHandler = (id) => {
+      sankHandler(id);
+      endGame('computer');
+    };
+
+    myEmitter.on('player-miss', missHandler);
+    myEmitter.on('player-hit', hitHandler);
+    // myEmitter.on('player-unavailable', (square) => {
+    //   // display unavail message
+    // });
+    myEmitter.on('player-sank', (square) => {
+      // display sank message
+    });
+
+    myEmitter.on('computer-miss', missHandler);
+    myEmitter.on('computer-hit', hitHandler);
+    // myEmitter.on('computer-unavailable', unavailableHandler);
+    myEmitter.on('computer-sank', sankHandler);
+    myEmitter.on('player-gameOver', playerWinHandler);
+    myEmitter.on('computer-gameOver', computerWinHandler);
   };
 
   const setBoardHandler = () => {
@@ -133,19 +201,6 @@ const domManipulator = (() => {
   };
 
   myEmitter.on('setBoard', setBoardHandler);
-
-  myEmitter.on('miss', (square) => {
-    // square background color = grey;
-  });
-  myEmitter.on('hit', (square) => {
-    // square background color = red;
-  });
-  myEmitter.on('unavailable', (square) => {
-    // display unavail message
-  });
-  myEmitter.on('sank', (square) => {
-    // display sank message
-  });
 })();
 
 export default domManipulator;

@@ -68,30 +68,27 @@ const gameFlow = (() => {
       const space = generateRandomCoord();
       const divId = space[1] * 10 + space[0];
       const result = player1.attack(...space);
-      myEmitter.emit(
-        `${result}`,
-        divId,
-        `${result === 'gameOver' ? 'You lost!' : undefined}`
-      );
+      // myEmitter.emit(
+      //   `${result}`,
+      //   divId,
+      //   `${result === 'gameOver' ? 'You lost!' : undefined}`
+      // );
+      return [result, divId];
     };
 
     myEmitter.on('playerAttack', (square) => {
-      square.removeEventListener();
       const result = player2.attack(
         parseInt(square.dataset.xCoord, 10),
         parseInt(square.dataset.yCoord, 10)
       );
-      myEmitter.emit(
-        `${result}`,
-        square,
-        `${result === 'gameOver' ? 'You won!' : undefined}`
-      );
+      myEmitter.emit(`player-${result}`, square);
       if (result === 'gameOver') {
         endGame();
         return;
       }
       const computerMove = computerAttack();
-      myEmitter.emit(`${computerMove[0]}`, computerMove[1]);
+      console.log(computerMove);
+      myEmitter.emit(`computer-${computerMove[0]}`, computerMove[1]);
     });
   };
 
