@@ -38,7 +38,7 @@ describe('Player test', () => {
   });
   test('Tries to hit [9,9] but misses', () => {
     expect(player.attack(9,9)).toBe('miss')
-  })
+  });
   test('Hits ship at [0,0] and sinks X-axis ship (returns sank)', () => {
     player.attack(0, 1);
     player.attack(0, 2);
@@ -50,5 +50,5 @@ describe('Player test', () => {
     player.checkPlaceableX(0,8);
     player.checkPlaceableX(0,9);
     expect(player.checkPlaceableX(5,6)).toBe('allShipsPlaced')
-  })
+  });
 });

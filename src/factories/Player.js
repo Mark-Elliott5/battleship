@@ -2,19 +2,11 @@ import Gameboard from './Gameboard';
 import Ship from './Ship';
 
 const Player = () => {
-  let board;
-  let ships;
-  let shipsSank;
+  const board = Gameboard();
+  const ships = Array.from([2, 3, 3, 4, 5], (length) => Ship(length));
+  let shipsSank = 0;
 
-  const reset = () => {
-    board = Gameboard();
-    ships = Array.from([2, 3, 3, 4, 5], (length) => Ship(length));
-    shipsSank = 0;
-  };
-
-  const checkPlaceableX = (data) => {
-    const xCoord = parseInt(data.xCoord, 10);
-    const yCoord = parseInt(data.yCoord, 10);
+  const checkPlaceableX = (xCoord, yCoord) => {
     const ship = ships.pop();
     const coords = [];
     if (ship !== undefined) {
@@ -39,9 +31,7 @@ const Player = () => {
     return 'allShipsPlaced';
   };
 
-  const checkPlaceableY = (data) => {
-    const xCoord = parseInt(data.xCoord, 10);
-    const yCoord = parseInt(data.yCoord, 10);
+  const checkPlaceableY = (xCoord, yCoord) => {
     const ship = ships.pop();
     const coords = [];
     if (ship !== undefined) {
@@ -91,14 +81,28 @@ const Player = () => {
     return 'hit';
   };
 
-  reset();
+  const generateRandomAttackCoord = () => {
+    const coords = [];
+    for (let y = 0; y < board.length; y += 1) {
+      const yArray = board[y];
+      for (let x = 0; x < yArray.length; x += 1) {
+        const space = yArray[x];
+        if (space !== 1 && space !== 2) {
+          const coord = [x, y];
+          coords.push(coord);
+        }
+      }
+    }
+    const result = coords[Math.floor(Math.random() * coords.length)];
+    return result;
+  };
 
   return {
     board,
     checkPlaceableX,
     checkPlaceableY,
     attack,
-    reset,
+    generateRandomAttackCoord,
   };
 };
 
