@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Battleship</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="styles.css" />
     <link
       rel="icon"
@@ -22,22 +28,16 @@
     <header>Battleship</header>
     <main>
       <div class="player">
+        <span id="player-alert" class="alert"></span>
         <div class="board" id="player-board"></div>
       </div>
       <div class="player">
+        <span id="computer-alert" class="alert"></span>
         <div class="board" id="computer-board"></div>
       </div>
     </main>
-    <footer>
-      <a href="https://github.com/Mark-Elliott5">
-        Designed by Mark Elliott<img
-          src="https://mark-elliott5.github.io/todo-list/925aa8e685ab0217bb34.png"
-          class="github-link"
-        />
-      </a>
-    </footer>
     <div id="setup-grid-wrapper" class="hidden">
-      <p>Setup your Battleship board!</p>
+      <span>Setup your Battleship board!</span>
       <button id="orientation-button">Change Ship Orientation</button>
       <div id="setup-grid"></div>
       <button id="submit-board" disabled>Submit</button>
@@ -46,6 +46,15 @@
       <p id="end-game-text"></p>
       <button id="reset-game">New Game</button>
     </div>
+    <footer>
+      <a href="https://github.com/Mark-Elliott5">
+        Designed by Mark Elliott
+        <img
+          src="https://mark-elliott5.github.io/todo-list/925aa8e685ab0217bb34.png"
+          class="github-link"
+        />
+      </a>
+    </footer>
     <script src="main.js"></script>
   </body>
 </html>
