@@ -11,6 +11,10 @@ const domManipulator = (() => {
     const computerSquares = document.getElementById('computer-board');
     playerSquares.replaceChildren();
     computerSquares.replaceChildren();
+    const playerAlert = document.getElementById('player-alert');
+    playerAlert.textContent = '';
+    const computerAlert = document.getElementById('computer-alert');
+    computerAlert.textContent = '';
     const shipCoords = [];
     for (let y = 0; y < board.length; y += 1) {
       for (let x = 0; x < board[y].length; x += 1) {

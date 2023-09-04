@@ -21,7 +21,7 @@ const Player = () => {
       for (let i = 0; i < ship.length; i += 1) {
         coords.push([yCoord, xCoord + i]);
         if (xCoord + i > 9 || board[yCoord][xCoord + i]) {
-          console.log('space taken or out of bounds');
+          // console.log('space taken or out of bounds');
           ships.push(ship);
           return EventObj('spaceTaken', xCoord, yCoord, 'X', undefined);
         }
@@ -35,7 +35,7 @@ const Player = () => {
       }
       return EventObj('allShipsPlaced', xCoord, yCoord, 'X', ship.length);
     }
-    console.log('all ships have been placed');
+    // console.log('all ships have been placed');
     return EventObj('allShipsPlaced', xCoord, yCoord, 'X', undefined);
   };
 
@@ -46,7 +46,7 @@ const Player = () => {
       for (let i = 0; i < ship.length; i += 1) {
         coords.push([yCoord + i, xCoord]);
         if (yCoord + i > 9 || board[yCoord + i][xCoord]) {
-          console.log('space taken or out of bounds');
+          // console.log('space taken or out of bounds');
           ships.push(ship);
           return EventObj('spaceTaken', xCoord, yCoord, 'Y', undefined);
         }
@@ -60,7 +60,7 @@ const Player = () => {
       }
       return EventObj('allShipsPlaced', xCoord, yCoord, 'Y', ship.length);
     }
-    console.log('all ships have been placed');
+    // console.log('all ships have been placed');
     return EventObj('allShipsPlaced', xCoord, yCoord, 'Y', undefined);
   };
 
