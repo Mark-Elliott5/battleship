@@ -2,7 +2,7 @@ import myEmitter from './emitter';
 
 const domManipulator = (() => {
   const playerAttackHandler = (square) => {
-    console.log('player attacks');
+    // console.log('player attacks');
     myEmitter.emit('playerAttack', square.target);
   };
 
@@ -52,24 +52,23 @@ const domManipulator = (() => {
     };
     orientationButton.addEventListener('click', orientationHandler);
     const setupGrid = document.getElementById('setup-grid');
-    if (!setupGrid.firstChild) {
-      const checkPlaceable = (square) => {
-        const { xCoord } = square.target.dataset;
-        const { yCoord } = square.target.dataset;
-        myEmitter.emit(`checkPlaceable${orientation}`, [
-          parseInt(xCoord, 10),
-          parseInt(yCoord, 10),
-        ]);
-      };
-      for (let i = 0; i < 100; i += 1) {
-        const square = document.createElement('div');
-        square.classList = 'setup-square';
-        square.dataset.xCoord = i % 10;
-        square.dataset.yCoord = Math.floor(i / 10);
-        square.id = `setup-${i}`;
-        square.addEventListener('click', checkPlaceable);
-        setupGrid.appendChild(square);
-      }
+    setupGrid.replaceChildren();
+    const checkPlaceable = (square) => {
+      const { xCoord } = square.target.dataset;
+      const { yCoord } = square.target.dataset;
+      myEmitter.emit(`checkPlaceable${orientation}`, [
+        parseInt(xCoord, 10),
+        parseInt(yCoord, 10),
+      ]);
+    };
+    for (let i = 0; i < 100; i += 1) {
+      const square = document.createElement('div');
+      square.classList = 'setup-square';
+      square.dataset.xCoord = i % 10;
+      square.dataset.yCoord = Math.floor(i / 10);
+      square.id = `setup-${i}`;
+      square.addEventListener('click', checkPlaceable);
+      setupGrid.appendChild(square);
     }
   };
 
@@ -82,26 +81,39 @@ const domManipulator = (() => {
 
   const missHandler = (id) => {
     if (typeof id === 'object') {
+      const computerAlert = document.getElementById('computer-alert');
+      computerAlert.textContent = 'You missed!';
       id.classList.add('miss');
       return;
     }
+    const playerAlert = document.getElementById('player-alert');
+    playerAlert.textContent = 'Computer missed!';
     const square = document.getElementById(`player-square-${id}`);
     square.classList.add('miss');
-    console.log(square);
+    // console.log(square);
   };
   const hitHandler = (id) => {
     if (typeof id === 'object') {
+      const computerAlert = document.getElementById('computer-alert');
+      computerAlert.textContent = 'You hit their ship!';
       id.classList.add('hit');
       return;
     }
+    const playerAlert = document.getElementById('player-alert');
+    playerAlert.textContent = 'Computer hit your ship!';
     const square = document.getElementById(`player-square-${id}`);
     square.classList.add('hit');
-    console.log(square);
+    // console.log(square);
   };
   // const unavailableHandler = (id) => {};
   const sankHandler = (id) => {
     hitHandler(id);
-    // alert sank message
+    if (typeof id === 'object') {
+      const computerAlert = document.getElementById('computer-alert');
+      computerAlert.textContent = 'You sank their ship!';
+    }
+    const playerAlert = document.getElementById('player-alert');
+    playerAlert.textContent = 'Computer sank your ship!';
   };
   const playerWinHandler = (id) => {
     sankHandler(id);
@@ -133,7 +145,6 @@ const domManipulator = (() => {
     const computerSquares = document.querySelectorAll(
       '.computer-board-square:not([class*=" "])'
     );
-
     for (let i = 0; i < computerSquares.length; i += 1) {
       computerSquares[i].removeEventListener('click', playerAttackHandler);
     }
@@ -145,7 +156,7 @@ const domManipulator = (() => {
     endGameWrapper.classList.remove('hidden');
     const resetButton = document.getElementById('reset-game');
     const resetGameHandler = () => {
-      console.log('resetGame emitted');
+      // console.log('resetGame emitted');
       myEmitter.emit('resetGame');
     };
     resetButton.addEventListener('click', resetGameHandler);
@@ -153,14 +164,9 @@ const domManipulator = (() => {
 
   const submitButton = document.getElementById('submit-board');
   submitButton.addEventListener('click', () => {
-    console.log('submitted board');
+    // console.log('submitted board');
     myEmitter.emit('submitBoard');
   });
-
-  const submitButtonHandler = () => {
-    submitButton.disabled = false;
-    myEmitter.off('allShipsPlaced', submitButtonHandler);
-  };
 
   const spaceTakenHandler = () => {
     // display space taken message
@@ -168,10 +174,10 @@ const domManipulator = (() => {
 
   const shipPlacedHandler = (EventObj) => {
     // display all ships placed message
-    const xCoord = { EventObj };
-    const yCoord = { EventObj };
-    const orientation = { EventObj };
-    const length = { EventObj };
+    const { xCoord } = EventObj;
+    const { yCoord } = EventObj;
+    const { orientation } = EventObj;
+    const { length } = EventObj;
     for (let i = 0; i < length; i += 1) {
       let id;
       if (orientation === 'X') {
@@ -183,6 +189,12 @@ const domManipulator = (() => {
       const setupSquare = document.getElementById(`setup-${id}`);
       setupSquare.classList.add('ship');
     }
+  };
+
+  const submitButtonHandler = (EventObj) => {
+    shipPlacedHandler(EventObj);
+    submitButton.disabled = false;
+    myEmitter.off('allShipsPlaced', submitButtonHandler);
   };
 
   const startGame = (board) => {

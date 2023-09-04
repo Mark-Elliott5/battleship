@@ -7,13 +7,13 @@ const gameFlow = (() => {
 
   const checkPlaceableXHandler = (data) => {
     const result = player1.checkPlaceableX(...data);
-    console.log(result);
+    // console.log(result);
     myEmitter.emit(`${result.event}`, result);
   };
 
   const checkPlaceableYHandler = (data) => {
     const result = player1.checkPlaceableY(...data);
-    console.log(result.event);
+    // console.log(result.event);
     myEmitter.emit(`${result.event}`, result);
   };
 
@@ -38,8 +38,8 @@ const gameFlow = (() => {
       return;
     }
     const computerMove = computerAttack();
-    console.log(result);
-    console.log(computerMove);
+    // console.log(result);
+    // console.log(computerMove);
     myEmitter.emit(`computer-${computerMove[0]}`, computerMove[1]);
     if (computerMove[0] === 'gameOver') {
       endGame();
@@ -71,7 +71,6 @@ const gameFlow = (() => {
 
   const endGame = () => {
     myEmitter.off('playerAttack', playerAttackHandler);
-    // myEmitter.emit('endGame');
     myEmitter.on('resetGame', resetGame);
   };
 

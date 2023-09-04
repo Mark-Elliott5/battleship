@@ -117,6 +117,8 @@ const Player = () => {
     }
   };
 
+  // const currentShip = () => ships.slice(-1)[0];
+
   return {
     board,
     checkPlaceableX,

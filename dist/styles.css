@@ -10,7 +10,35 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
+    font-family: 'Bebas Neue', 'Courier New', Courier, monospace;
+}
+
+header {
+    font-size: 4em;
+}
+
+span, button {
+    font-family: inherit;
+}
+
+span {
+    font-size: xx-large;
+}
+
+button {
+    color: white;
+    background-color: darkgreen;
+    border-radius: 5px;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    font-size: x-large;
+}
+
+button:disabled {
+    background-color: grey;
+    cursor: auto;
 }
 
 .board {
@@ -41,12 +69,14 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 50vw;
-    height: 50vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    backdrop-filter: blur(4px);
+    width: 100vw;
+    height: 100vh;
+    gap: 20px;
 }
 
 #setup-grid {
@@ -55,10 +85,11 @@ body {
     grid-template-rows: repeat(10, minmax(0, 1fr));;
     width: 300px;
     height: 300px;
+    background-color: black;
 }
 
 .setup-square {
-    border: solid greenyellow;
+    border: 1px solid greenyellow;
 }
 
 main {
@@ -78,8 +109,24 @@ main {
     z-index: 1;
 }
 
+#end-game-wrapper, .player {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 .hidden {
     visibility: hidden;
+}
+
+footer {
+    font-size: 1rem;
+}
+
+a {
+    text-decoration: none;
+    color: white;
 }
 
 .github-link {
