@@ -107,7 +107,6 @@ const Player = () => {
   const generateRandomBoard = () => {
     while (ships.length) {
       const orientation = ['X', 'Y'][Math.floor(Math.random() * 2)];
-      // let result;
       if (orientation === 'X') {
         checkPlaceableX(...generateRandomAttackCoord());
       }
