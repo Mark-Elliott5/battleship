@@ -64,7 +64,7 @@ button:disabled {
     background-color: red;
 }
 
-#setup-grid-wrapper {
+#setup-grid-wrapper, #end-game-wrapper {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -73,10 +73,19 @@ button:disabled {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(8px);
+}
+
+#setup-grid-wrapper {
     width: 100vw;
     height: 100vh;
     gap: 20px;
+}
+
+#end-game-wrapper {
+    font-size: xx-large;
+    border-radius: 8px;
+    padding: 26px;
 }
 
 #setup-grid {
@@ -109,7 +118,7 @@ main {
     z-index: 1;
 }
 
-#end-game-wrapper, .player {
+.player {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -127,6 +136,8 @@ footer {
 a {
     text-decoration: none;
     color: white;
+    display: grid;
+    grid-template-columns: 5fr 1fr;
 }
 
 .github-link {
