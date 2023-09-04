@@ -60,7 +60,8 @@ const domManipulator = (() => {
     const checkPlaceable = (square) => {
       const { xCoord } = square.target.dataset;
       const { yCoord } = square.target.dataset;
-      myEmitter.emit(`checkPlaceable${orientation}`, [
+      myEmitter.emit('checkPlaceable', [
+        orientation,
         parseInt(xCoord, 10),
         parseInt(yCoord, 10),
       ]);
@@ -74,6 +75,10 @@ const domManipulator = (() => {
       square.addEventListener('click', checkPlaceable);
       setupGrid.appendChild(square);
     }
+    const submitButton = document.getElementById('submit-board');
+    submitButton.addEventListener('click', () => {
+      myEmitter.emit('submitBoard');
+    });
   };
 
   const toggleSetupBoard = () => {
@@ -109,7 +114,7 @@ const domManipulator = (() => {
     square.classList.add('hit');
     // console.log(square);
   };
-  // const unavailableHandler = (id) => {};
+
   const sankHandler = (id) => {
     hitHandler(id);
     if (typeof id === 'object') {
@@ -119,6 +124,7 @@ const domManipulator = (() => {
     const playerAlert = document.getElementById('player-alert');
     playerAlert.textContent = 'Computer sank your ship!';
   };
+
   const playerWinHandler = (id) => {
     sankHandler(id);
     endGame('player');
@@ -131,14 +137,9 @@ const domManipulator = (() => {
   const removeGameEmitters = () => {
     myEmitter.off('player-miss', missHandler);
     myEmitter.off('player-hit', hitHandler);
-    // myEmitter.on('player-unavailable', (square) => {
-    // display unavail message
-    // });
     myEmitter.off('player-sank', sankHandler);
-
     myEmitter.off('computer-miss', missHandler);
     myEmitter.off('computer-hit', hitHandler);
-    // myEmitter.on('computer-unavailable', unavailableHandler);
     myEmitter.off('computer-sank', sankHandler);
     myEmitter.off('player-gameOver', playerWinHandler);
     myEmitter.off('computer-gameOver', computerWinHandler);
@@ -166,18 +167,7 @@ const domManipulator = (() => {
     resetButton.addEventListener('click', resetGameHandler);
   };
 
-  const submitButton = document.getElementById('submit-board');
-  submitButton.addEventListener('click', () => {
-    // console.log('submitted board');
-    myEmitter.emit('submitBoard');
-  });
-
-  const spaceTakenHandler = () => {
-    // display space taken message
-  };
-
   const shipPlacedHandler = (EventObj) => {
-    // display all ships placed message
     const { xCoord } = EventObj;
     const { yCoord } = EventObj;
     const { orientation } = EventObj;
@@ -197,32 +187,25 @@ const domManipulator = (() => {
 
   const submitButtonHandler = (EventObj) => {
     shipPlacedHandler(EventObj);
+    const submitButton = document.getElementById('submit-board');
     submitButton.disabled = false;
     myEmitter.off('allShipsPlaced', submitButtonHandler);
+    myEmitter.off('shipPlaced', shipPlacedHandler);
   };
 
   const startGame = (board) => {
+    const submitButton = document.getElementById('submit-board');
     submitButton.disabled = true;
-    // do stuff
-    // toggleSetupBoard();
-    // unpack data object (data.player1 and data.player2)
     myEmitter.off('startGame', startGame);
-    // myEmitter.off('spaceTaken');
-    // myEmitter.off('shipPlaced');
-    // myEmitter.off('allShipsPlaced');
+
     toggleSetupBoard();
     constructBoards(board);
 
     myEmitter.on('player-miss', missHandler);
     myEmitter.on('player-hit', hitHandler);
-    // myEmitter.on('player-unavailable', (square) => {
-    // display unavail message
-    // });
     myEmitter.on('player-sank', sankHandler);
-
     myEmitter.on('computer-miss', missHandler);
     myEmitter.on('computer-hit', hitHandler);
-    // myEmitter.on('computer-unavailable', unavailableHandler);
     myEmitter.on('computer-sank', sankHandler);
     myEmitter.on('player-gameOver', playerWinHandler);
     myEmitter.on('computer-gameOver', computerWinHandler);
@@ -230,7 +213,6 @@ const domManipulator = (() => {
 
   const setBoardHandler = () => {
     myEmitter.on('startGame', startGame);
-    myEmitter.on('spaceTaken', spaceTakenHandler);
     myEmitter.on('shipPlaced', shipPlacedHandler);
     myEmitter.on('allShipsPlaced', submitButtonHandler);
     createSetupGrid();

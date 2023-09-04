@@ -5,23 +5,22 @@ const gameFlow = (() => {
   let player1 = Player();
   let player2 = Player();
 
-  const checkPlaceableXHandler = (data) => {
-    const result = player1.checkPlaceableX(...data);
-    // console.log(result);
-    myEmitter.emit(`${result.event}`, result);
-  };
-
-  const checkPlaceableYHandler = (data) => {
-    const result = player1.checkPlaceableY(...data);
-    // console.log(result.event);
-    myEmitter.emit(`${result.event}`, result);
-  };
-
   const computerAttack = () => {
     const space = player1.generateRandomAttackCoord();
     const divId = space[1] * 10 + space[0];
     const result = player1.attack(...space);
     return [result, divId];
+  };
+
+  const checkPlaceableHandler = (data) => {
+    const [orientation, x, y] = data;
+    let result;
+    if (orientation === 'X') {
+      result = player1.checkPlaceableX(x, y);
+    } else {
+      result = player1.checkPlaceableY(x, y);
+    }
+    myEmitter.emit(`${result.event}`, result);
   };
 
   const playerAttackHandler = (square) => {
@@ -47,8 +46,7 @@ const gameFlow = (() => {
   };
 
   const startGame = () => {
-    myEmitter.off('checkPlaceableX', checkPlaceableXHandler);
-    myEmitter.off('checkPlaceableY', checkPlaceableYHandler);
+    myEmitter.off('checkPlaceable', checkPlaceableHandler);
     myEmitter.off('submitBoard', startGame);
     player2.generateRandomBoard();
     myEmitter.emit('startGame', player1.board);
@@ -57,8 +55,7 @@ const gameFlow = (() => {
 
   const setBoard = () => {
     myEmitter.emit('setBoard');
-    myEmitter.on('checkPlaceableX', checkPlaceableXHandler);
-    myEmitter.on('checkPlaceableY', checkPlaceableYHandler);
+    myEmitter.on('checkPlaceable', checkPlaceableHandler);
     myEmitter.on('submitBoard', startGame);
   };
 
